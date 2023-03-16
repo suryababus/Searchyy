@@ -43,7 +43,7 @@ function App() {
       <BaseProvider theme={LightTheme}>
         <Block width="500px" height="800px">
           <AppNavBar
-            title="Searchyyy"
+            title="Searchyy"
             mainItems={mainItems}
             onMainItemSelect={(item) => {
               setMainItems((prev) => setItemActive(prev, item));

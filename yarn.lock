@@ -5416,6 +5416,13 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
 
+exec-sh@^0.2.0:
+  version "0.2.2"
+  resolved "https://unpm.uberinternal.com/exec-sh/-/exec-sh-0.2.2.tgz"
+  integrity sha1-Kl5//L19C6J1W97LFuWkJ9+97DY=
+  dependencies:
+    merge "^1.2.0"
+
 exec-sh@^0.3.2:
   version "0.3.6"
   resolved "https://registry.npmjs.org/exec-sh/-/exec-sh-0.3.6.tgz"
@@ -7955,6 +7962,11 @@ merge-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/merge-stream/-/merge-stream-2.0.0.tgz"
   integrity sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==
+
+merge@^1.2.0:
+  version "1.2.1"
+  resolved "https://unpm.uberinternal.com/merge/-/merge-1.2.1.tgz"
+  integrity sha1-OL6/gMMiCopIe2/Ps5QbsRcgwUU=
 
 merge2@^1.3.0:
   version "1.4.1"
@@ -12083,6 +12095,14 @@ warning@^4.0.0, warning@^4.0.2:
   integrity sha1-Fungd+uKhtavfWSqHgX9hbRnjKM=
   dependencies:
     loose-envify "^1.0.0"
+
+watch@^1.0.2:
+  version "1.0.2"
+  resolved "https://unpm.uberinternal.com/watch/-/watch-1.0.2.tgz"
+  integrity sha1-NApxe952Vyb6CqB9ch4BR6VR3ww=
+  dependencies:
+    exec-sh "^0.2.0"
+    minimist "^1.2.0"
 
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"
