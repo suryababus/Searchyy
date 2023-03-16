@@ -1,0 +1,22 @@
+{
+  "name": "Searchy",
+  "description": "Learning all about Chrome Extensions Manifest Version 3!",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "icons": {
+    "48": "/images/icon48.png",
+    "128": "/images/icon128.png"
+  },
+  "background": {
+    "service_worker": "/dist/background/index.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "/images/icon48.png",
+      "128": "/images/icon128.png"
+    }
+  },
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "host_permissions": ["<all_urls>"]
+}
