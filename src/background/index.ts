@@ -42,17 +42,15 @@ function insertContentScript(tab: chrome.tabs.Tab) {
 }
 
 try {
-  console.log("background Script");
+  // console.log("background Script");
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach(insertContentScript);
   });
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === "complete" && /^http/.test(tab?.url || "")) {
-      insertContentScript(tab);
-    }
-  });
+  // chrome.tabs.onCreated.addListener((tab) => {
+  //   insertContentScript(tab);
+  // });
 
-  chrome.runtime.onMessage.addListener(function (
+  chrome.runtime.onMessage.addListener(async function (
     request,
     sender,
     sendResponse
@@ -68,9 +66,26 @@ try {
           sendResponse("indexed");
         }
         break;
-      case "search": {
-        const key = request.key;
-        sendResponse(search(key));
+      case "search":
+        {
+          const key = request.key;
+          sendResponse(search(key));
+        }
+        break;
+      case "openTab": {
+        const tabId = request.tabId;
+        const searchKey = request.searchkey;
+        var updateProperties = { active: true };
+        try {
+          const tab = await chrome.tabs.get(tabId);
+          await chrome.tabs.update(tabId, updateProperties);
+          chrome.tabs.sendMessage(tabId, { type: "search", key: searchKey });
+          await chrome.windows.update(tab.windowId, { focused: true });
+        } catch (e) {
+          if (e instanceof Error) {
+            // toaster.negative(e.message);
+          }
+        }
       }
     }
   });
