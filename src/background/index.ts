@@ -43,9 +43,9 @@ function insertContentScript(tab: chrome.tabs.Tab) {
 
 try {
   // console.log("background Script");
-  chrome.tabs.query({}, (tabs) => {
-    tabs.forEach(insertContentScript);
-  });
+  // chrome.tabs.query({}, (tabs) => {
+  //   tabs.forEach(insertContentScript);
+  // });
   // chrome.tabs.onCreated.addListener((tab) => {
   //   insertContentScript(tab);
   // });

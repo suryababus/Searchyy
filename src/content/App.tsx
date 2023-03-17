@@ -47,11 +47,17 @@ function App() {
     };
     searchIndex();
   }, [searchKey]);
+
   const goToTab = async (tabId: number) => {
     await chrome.runtime.sendMessage({
       type: "openTab",
       tabId,
     });
+  };
+
+  const onOutsideClick = () => {
+    console.log("clicked outside");
+    setVisibility(false);
   };
 
   if (!visible) return null;
@@ -69,6 +75,7 @@ function App() {
         alignItems: "center",
         display: "flex",
       }}
+      onClick={onOutsideClick}
     >
       <StyletronProvider value={engine}>
         <BaseProvider theme={LightTheme}>
