@@ -12,6 +12,7 @@
 /build
 /dist
 /public/dist
+.npmrc
 
 # misc
 .DS_Store
