@@ -1,3 +1,5 @@
+import { useSpotSearch } from "./state/spot-search";
+
 console.log("content script");
 
 (async () => {
@@ -14,10 +16,16 @@ console.log("content script");
     sendResponse
   ) {
     switch (request.type) {
-      case "search": {
+      case "search":
+        console.log("focused by searchy");
         (window as any).find(request.key);
         sendResponse("done");
-      }
+        break;
+      case "openSearchBar":
+        useSpotSearch.setState({
+          visible: true,
+        });
+        sendResponse("done");
     }
   });
 })();

@@ -17,6 +17,15 @@
       "128": "/images/icon128.png"
     }
   },
+  "commands": {
+    "searchy-bar": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Run \"foo\" on the current page."
+    }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

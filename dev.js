@@ -5,6 +5,7 @@ const runBuild = () => {
   console.log("rebuilding...");
   const result = spawn("node", ["build.js"]);
   console.log("build done.");
+  console.clear();
   console.log("Watching...");
 };
 runBuild();
