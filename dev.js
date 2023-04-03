@@ -10,7 +10,7 @@ const runBuild = () => {
 };
 runBuild();
 watch.createMonitor(
-  "/Users/suryababu.sakthivel/Documents/hobby/Searchyy/src",
+  "./src",
   function (monitor) {
     monitor.on("created", function (f, stat) {
       // Handle new files

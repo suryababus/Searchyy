@@ -43,6 +43,7 @@
     "file-loader": "6.1.1",
     "flexsearch": "^0.7.31",
     "fs-extra": "^9.0.1",
+    "fuse.js": "^6.6.2",
     "html-webpack-plugin": "4.5.0",
     "identity-obj-proxy": "3.0.0",
     "jest": "26.6.0",

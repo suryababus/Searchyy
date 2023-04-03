@@ -1,5 +1,9 @@
-import { ActionRequest } from "./action-request-types";
-import { openTab } from "./open-tab-action";
+import { ActionRequest, TabOpenedRequest, TabClosedRequest, SeachRequest } from "./action-request-types";
+import { TabClosed } from "./tab-closed-action";
+import { TabOpened } from "./tab-opened-action";
+import { SearchTabs } from "./search-action";
+import {ProfileFunction} from "../profiler/profiler1"
+
 
 chrome.runtime.onMessage.addListener(async function (
   _request,
@@ -9,23 +13,39 @@ chrome.runtime.onMessage.addListener(async function (
   let request = _request as ActionRequest;
 
   switch (request.action) {
-    case "OPEN_TAB":
+    case "TAB_OPENED":
       {
-        const tabId = request.tabData;
-        openTab();
-        // const searchKey = request.searchkey;
-        // var updateProperties = { active: true };
-        // try {
-        //   const tab = await chrome.tabs.get(tabId);
-        //   await chrome.tabs.update(tabId, updateProperties);
-        //   chrome.tabs.sendMessage(tabId, { type: "search", key: searchKey });
-        //   await chrome.windows.update(tab.windowId, { focused: true });
-        // } catch (e) {
-        //   if (e instanceof Error) {
-        //     // toaster.negative(e.message);
-        //   }
-        // }
+        ProfileFunction("TabOpened",TabOpened, request as TabOpenedRequest);
       }
       break;
+    case "TAB_CLOSED":
+      {
+        ProfileFunction("TabClosed",TabClosed, request as TabClosedRequest);
+      }
+      break;
+    case "SEARCH":
+      {
+        const searchRequest = request as SeachRequest;
+        const searchResponse = SearchTabs(searchRequest);
+        sendResponse(searchResponse);
+      }
+      break;
+      case "TAB_UPDATED":
+        
+      break;
+      case "ADD_TABS_TO_GROUP":
+
+      break;
+
+      case "REMOVE_TABS_FROM_GROUP":
+
+      break;
+
+      case "DELETE_GROUP":
+
+      break;
+
+    default:
+
   }
 });
