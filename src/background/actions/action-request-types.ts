@@ -57,6 +57,19 @@ export type SearchResponse = {
     value: string;
     key: string;
     }[];
+export type OpenTabsInNewWindowRequest = {
+  action: "OPEN_TABS_NEW_WINDOW";
+  tabs: number[];
+};
+
+export type CloseTabs = {
+  action: "CLOSE_TABS";
+  tabs: number[];
+};
+
+export type GoToTab = {
+  action: "GO_TO_TAB";
+  tabID: number;
 };
 
 export type ActionRequest =
@@ -67,4 +80,7 @@ export type ActionRequest =
   | TabClosedRequest
   | AddTabsToGroupRequest
   | RemoveTabsFromGroupRequest
-  | DeleteGroupRequest;
+  | DeleteGroupRequest
+  | OpenTabsInNewWindowRequest
+  | CloseTabs
+  | GoToTab;

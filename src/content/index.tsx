@@ -15,7 +15,6 @@ try {
     document.body.append(div);
     div.appendChild(g);
   }
-
   ReactDOM.render(
     <React.StrictMode>
       <ErrorBoundary
