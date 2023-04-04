@@ -1,9 +1,16 @@
+import "./actions";
+import { registerListener } from "./actions";
+
 // Shortcut key
 chrome.commands.onCommand.addListener(async (command, tab) => {
-  await chrome.tabs.update(tab.id || 0, { active: true });
-  chrome.tabs.sendMessage(tab.id || 0, { type: "openSearchBar" });
+  console.log("command", command, tab);
+  if (tab.id && tab.id > 0) {
+    await chrome.tabs.update(tab.id || 0, { active: true });
+    chrome.tabs.sendMessage(tab.id || 0, { type: "OPEN_SEARCH_BAR" });
+  }
 });
 
+registerListener();
 function insertContentScript(tab: chrome.tabs.Tab) {
   chrome.scripting
     .executeScript({

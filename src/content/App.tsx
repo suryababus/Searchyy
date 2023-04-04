@@ -1,14 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect } from "react";
 import "./App.css";
 import { Client as Styletron } from "styletron-engine-atomic";
 import { Provider as StyletronProvider } from "styletron-react";
-import { BaseProvider, LightTheme, useStyletron } from "baseui";
+import { BaseProvider, DarkTheme } from "baseui";
 import { Block } from "baseui/block";
-import { Card } from "baseui/card";
-import { Input } from "baseui/input";
 import { useSpotSearch } from "./state/spot-search";
-import { Badge, COLOR } from "baseui/badge";
-import { LabelXSmall, ParagraphXSmall } from "baseui/typography";
+import { SearchBar } from "./components/search-bar";
+import { SearchResult, SearchResultProps } from "./components/search-result";
+import { useSelectedTab } from "./state/selected-tabs";
+import { Button } from "baseui/button";
+import { search } from "./background-script-apis/search";
+import { openTabsInNewWindow } from "./background-script-apis/open-all-tabs-new-window";
+import { closeTabs } from "./background-script-apis/close-tabs";
 
 const iframeClassName = "my-iframe-body";
 const engine = new Styletron({ prefix: `${iframeClassName}` });
@@ -21,50 +25,25 @@ function App() {
     setHighlightedSearchResult,
   } = useSpotSearch();
 
+  const { selectedTabIds, reset } = useSelectedTab();
+
   const [searchKey, setSearchKey] = React.useState("");
-  const [searchResult, setSearchResult] = React.useState<any[]>([]);
-  const [, theme] = useStyletron();
+  const [searchResult, setSearchResult] = React.useState<SearchResultProps>();
 
   const closeSearch = useCallback(() => {
-    setSearchResult([]);
     setVisibility(false);
     setHighlightedSearchResult(0);
   }, [setHighlightedSearchResult, setVisibility]);
+
   const openSearch = useCallback(() => {
-    setSearchResult([]);
     setVisibility(true);
     setHighlightedSearchResult(0);
   }, [setHighlightedSearchResult, setVisibility]);
-
-  const onTabCardClick = useCallback(
-    (tab: any) => {
-      goToTab(tab.meta.tabId);
-      closeSearch();
-    },
-    [closeSearch]
-  );
 
   useEffect(() => {
     function listener(e: KeyboardEvent) {
       if (e.key === "Escape") {
         closeSearch();
-      }
-      if (e.key === "ArrowDown") {
-        if (highlightedSearchResult === searchResult.length) {
-          setHighlightedSearchResult(1);
-          return;
-        }
-        setHighlightedSearchResult(highlightedSearchResult + 1);
-      }
-      if (e.key === "ArrowUp") {
-        if (highlightedSearchResult === 0) {
-          setHighlightedSearchResult(searchResult.length);
-          return;
-        }
-        setHighlightedSearchResult(highlightedSearchResult - 1);
-      }
-      if (e.key === "Enter") {
-        onTabCardClick(searchResult[highlightedSearchResult - 1]);
       }
     }
     window.addEventListener("keydown", listener);
@@ -72,7 +51,6 @@ function App() {
   }, [
     closeSearch,
     highlightedSearchResult,
-    onTabCardClick,
     searchResult,
     setHighlightedSearchResult,
     setVisibility,
@@ -80,27 +58,24 @@ function App() {
   ]);
 
   useEffect(() => {
-    setHighlightedSearchResult(0);
-    if (searchKey === "") {
-      setSearchResult([]);
-      return;
-    }
     const searchIndex = async () => {
-      const response = await chrome.runtime.sendMessage({
-        type: "search",
-        key: searchKey.toLowerCase(),
-      });
-
-      setSearchResult(response || []);
+      const response = await search(searchKey);
+      setSearchResult(response);
     };
     searchIndex();
   }, [searchKey, setHighlightedSearchResult]);
 
-  const goToTab = async (tabId: number) => {
-    await chrome.runtime.sendMessage({
-      type: "openTab",
-      tabId,
-    });
+  const onOpenInNewWindowPress = () => {
+    openTabsInNewWindow(selectedTabIds);
+    reset();
+  };
+  const closeTabsPressed = async () => {
+    await closeTabs(selectedTabIds);
+    setTimeout(async () => {
+      const response = await search(searchKey);
+      setSearchResult(response);
+    }, 500);
+    reset();
   };
 
   if (!visible) return null;
@@ -121,7 +96,7 @@ function App() {
       }}
     >
       <StyletronProvider value={engine}>
-        <BaseProvider theme={LightTheme}>
+        <BaseProvider theme={DarkTheme}>
           <Block
             width={"100vw"}
             height={"100vh"}
@@ -131,65 +106,37 @@ function App() {
             alignItems={"center"}
           >
             <Block width="80%" height="80%" padding={"8px"}>
-              <Input
-                onChange={(e) => {
-                  setSearchKey(e.target.value);
-                }}
-                autoFocus
-                onBlur={() => setTimeout(closeSearch, 100)}
-                onFocus={openSearch}
+              <SearchBar
+                setSearchKey={setSearchKey}
+                closeSearch={closeSearch}
+                openSearch={openSearch}
+                searchKey={searchKey}
               />
               <Block padding={"4px"} />
-              {searchResult.length > 0 &&
-                searchResult.map((val, index) => (
-                  <div key={index} onClick={() => onTabCardClick(val)}>
-                    <Card
-                      overrides={{
-                        Root: {
-                          style: ({ $theme }) => {
-                            if (index !== highlightedSearchResult - 1)
-                              return {};
-                            return {
-                              backgroundColor: $theme.colors.accent,
-                            };
-                          },
-                        },
-                      }}
-                    >
-                      {window.location.href === val?.meta.url && (
-                        <Block marginBottom={"4px"}>
-                          <Badge content="Same page" color={COLOR.positive} />
-                        </Block>
-                      )}
-
-                      <LabelXSmall
-                        margin={"0px"}
-                        color={
-                          index !== highlightedSearchResult - 1
-                            ? theme.colors.accent
-                            : theme.colors.white
-                        }
-                        $style={{
-                          textDecoration: "underline",
-                        }}
-                      >
-                        {val?.meta.url}
-                      </LabelXSmall>
-                      <ParagraphXSmall
-                        marginTop={"4px"}
-                        color={
-                          index !== highlightedSearchResult - 1
-                            ? theme.colors.black
-                            : theme.colors.white
-                        }
-                      >
-                        {val?.matchString}
-                      </ParagraphXSmall>
-                    </Card>
-                    <Block padding={"4px"} />
-                  </div>
-                ))}
+              {searchResult && (
+                <SearchResult
+                  searchResult={searchResult}
+                  highlightedSearchResult={highlightedSearchResult}
+                />
+              )}
             </Block>
+            {selectedTabIds.length > 0 && (
+              <Block
+                width={"20%"}
+                display={"flex"}
+                flexDirection={"column"}
+                gridGap={"10px"}
+              >
+                <Button kind="secondary" onClick={closeTabsPressed}>
+                  Close all
+                </Button>
+                <Button kind="secondary">Create new groups</Button>
+                <Button kind="secondary">Add all to exsiting group</Button>
+                <Button kind="secondary" onClick={onOpenInNewWindowPress}>
+                  Pull all tabs to new window
+                </Button>
+              </Block>
+            )}
           </Block>
         </BaseProvider>
       </StyletronProvider>
