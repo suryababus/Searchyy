@@ -52,11 +52,12 @@ export type SearchResponse = {
   tabTitle: string;
   tabFavIconUrl: string;
   tabContent: string;
-  matchedContent : {
+  matchedContent: {
     indices: [number, number][];
     value: string;
     key: string;
-    }[];
+  }[];
+};
 export type OpenTabsInNewWindowRequest = {
   action: "OPEN_TABS_NEW_WINDOW";
   tabs: number[];
