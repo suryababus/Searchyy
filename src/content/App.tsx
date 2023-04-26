@@ -15,6 +15,8 @@ import { Checkbox, LABEL_PLACEMENT } from "baseui/checkbox";
 import { LabelMedium } from "baseui/typography";
 import { SearchResponseType } from "../background/actions";
 
+let searchTimeOutId: NodeJS.Timeout;
+
 function App() {
   const {
     visible,
@@ -27,6 +29,7 @@ function App() {
   const [, theme] = useStyletron();
 
   const [searchKey, setSearchKey] = React.useState("");
+  const [query, setQuery] = React.useState("");
   const [searchResult, setSearchResult] = React.useState<SearchResponseType>();
 
   const closeSearch = useCallback(() => {
@@ -62,7 +65,11 @@ function App() {
 
       setSearchResult(response);
     };
-    searchIndex();
+    clearTimeout(searchTimeOutId);
+    searchTimeOutId = setTimeout(() => {
+      searchIndex();
+      setQuery(searchKey);
+    }, 500);
   }, [searchKey, setHighlightedSearchResult]);
 
   const onOpenInNewWindowPress = () => {
@@ -117,7 +124,7 @@ function App() {
             <SearchResult
               searchResult={searchResult}
               highlightedSearchResult={highlightedSearchResult}
-              query={searchKey}
+              query={query}
             />
           )}
         </Block>

@@ -55,7 +55,17 @@ export function SearchResultCard(
 
   let titleHtml = <>{highLightText(tab?.title || "", query)}</>;
   let urlHtml = <>{highLightText(tab?.url || "", query)}</>;
-  let contentHtmlText = <>{highLightText(content || "", query)}</>;
+
+  const reg = new RegExp(`(${query})`, "gi");
+  let firstMatchIndex = reg.exec(content)?.index || 0;
+  if (firstMatchIndex > 100) {
+    firstMatchIndex = firstMatchIndex - 100;
+  }
+  let trimmedContent = content.slice(firstMatchIndex);
+  if (trimmedContent.length > 200) {
+    trimmedContent = trimmedContent.slice(0, 200);
+  }
+  let contentHtmlText = <>{highLightText(trimmedContent || "", query)}</>;
 
   return (
     <Block>
