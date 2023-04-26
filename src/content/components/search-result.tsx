@@ -2,25 +2,16 @@ import { Block } from "baseui/block";
 import { SearchResultCard } from "./search-result-card";
 import React from "react";
 import { Tabs, Tab } from "baseui/tabs-motion";
-
-type TabGroup = {
-  name: string;
-  urls: string[];
-};
-
-export type SearchResultProps = {
-  tabs: chrome.tabs.Tab[];
-  tabGroups: TabGroup[];
-  currentTab: chrome.tabs.Tab;
-};
+import { SearchResponseType } from "../../background/actions";
 
 type Props = {
-  searchResult: SearchResultProps;
+  searchResult: SearchResponseType;
   highlightedSearchResult: number;
+  query: string;
 };
 
 export function SearchResult(props: Props) {
-  const { searchResult } = props;
+  const { searchResult, query } = props;
   const [activeKey, setActiveKey] = React.useState<React.Key>(0);
   return (
     <Tabs
@@ -36,9 +27,11 @@ export function SearchResult(props: Props) {
           {searchResult.tabs.length > 0 &&
             searchResult.tabs.map((tab, index) => (
               <SearchResultCard
-                index={tab.id || 0}
-                tab={tab}
+                key={tab.tab.id || index}
+                tab={tab.tab}
+                content={tab.content}
                 currentTab={searchResult.currentTab}
+                query={query}
               />
             ))}
         </Block>

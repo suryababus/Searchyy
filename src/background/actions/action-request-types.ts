@@ -46,18 +46,6 @@ export type DeleteGroupRequest = {
 //Array of Array of number pairs
 //Each pair represents the start and end index of a matched string
 
-export type SearchResponse = {
-  tabId: string;
-  tabUrl: string;
-  tabTitle: string;
-  tabFavIconUrl: string;
-  tabContent: string;
-  matchedContent: {
-    indices: [number, number][];
-    value: string;
-    key: string;
-  }[];
-};
 export type OpenTabsInNewWindowRequest = {
   action: "OPEN_TABS_NEW_WINDOW";
   tabs: number[];

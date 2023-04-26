@@ -38,7 +38,7 @@ function App() {
         type: "search",
         key: searchKey.toLowerCase(),
       });
-      console.log(response);
+
       setSearchResult(response);
     })();
   }, [searchKey]);

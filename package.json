@@ -52,6 +52,7 @@
     "jest-watch-typeahead": "0.6.1",
     "jquery": "^3.6.0",
     "mini-css-extract-plugin": "0.11.3",
+    "moment-timezone": "^0.5.43",
     "npm-watch": "^0.11.0",
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pnp-webpack-plugin": "1.6.4",
